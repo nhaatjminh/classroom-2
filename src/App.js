@@ -8,6 +8,7 @@ import AcceptLink from './Component/AcceptLink'
 import MembersList from './Component/Members';
 import TopNavBar from './Component/AppBar';
 import Profile from './Component/Profile';
+import ListAssignment from './Component/ListAssignment'
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
       <Route path='/' element={<Login onLoginSuccess={onLoginSuccess}/>}/>
       <Route path='/register' element={<Register/>}/>
       <Route path='/classes/detail/:id' element={<DetailClass/>}/>
+      <Route path='/classes/detail/:id/assignment' element={<ListAssignment/>}/>
       <Route path='/classes/members/:id' element={<MembersList/>}/>
       <Route path='/classes/acceptlink/:tokenlink' element={<AcceptLink/>}/>
       <Route path='/profile/:id' element={<Profile/>}/>

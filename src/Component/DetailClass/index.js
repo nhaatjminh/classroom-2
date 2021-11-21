@@ -1,8 +1,8 @@
 
 import React, { useState} from 'react';
-import { NavLink, useParams} from "react-router-dom"
+import { useParams} from "react-router-dom"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Modal } from "react-bootstrap"
+import { Modal } from "react-bootstrap"
 import './index.css'
 import SendIcon from '@mui/icons-material/Send';
 import InputLabel from '@mui/material/InputLabel';
@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import {Typography} from '@material-ui/core'
+import { Link } from 'react-router-dom';
 
 
 const DetailClass = () => {
@@ -175,26 +176,14 @@ const DetailClass = () => {
         getRole();
         setLoadFirst(false);
     }
-    const memberURL = '/classes/members/' + params.id;
+
+    const listAssignmentURL = '/classes/detail/' + params.id + "/assignment";
+
     return(
             <div>
-                <Navbar bg="dark" variant="dark">
-                    
-                    {/* <button className="btn btn-success backbtn" onClick={this.props.backToList}> Back </button> */}
-                    <Navbar.Toggle />
-                    <Navbar.Collapse className="justify-content-end">
-                    <NavLink className="nav-link" to="#" >
-                        Detail
-                    </NavLink>
-                    <NavLink className="nav-link" to={memberURL}>
-                        People
-                    </NavLink>
-                    </Navbar.Collapse>
-                </Navbar>
-                <div className="btn-new" style={{ margin: '10px 10px'}}>
-                       {userRole === "teacher" ? 
-                       <button className="btn btn-success" onClick={onHandleShow}> Invite </button> :
-                       <></>} 
+                <div style={{ margin: '10px 10px'}} hidden={!userRole === "teacher"}>
+                       <button className="btn btn-success m-2" onClick={onHandleShow}> Invite </button>
+                       <Link className="btn btn-success m-2" to={listAssignmentURL}>List Assignment</Link>
                 </div>
 
                 <div className="container-fluid mt-5">
