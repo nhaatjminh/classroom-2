@@ -127,7 +127,7 @@ const ListAssignment = () => {
     }
     const detailURL = '/classes/detail/' + params.id;
     const memberURL = '/classes/members/' + params.id;
-    const test = process.env.REACT_APP_API_URL + "assignment/" + params.id;
+    const gradesStructure = '/grades/' + params.id;
     return (
         <div>
             <Navbar bg="dark" variant="dark">
@@ -146,6 +146,9 @@ const ListAssignment = () => {
                 </NavLink>
                 <NavLink className="nav-link" to='#'>
                     List Assignment
+                </NavLink>
+                <NavLink className="nav-link" to={gradesStructure} hidden={!(role === 'teacher')}>
+                    Grades Structure
                 </NavLink>
                 </Navbar.Collapse>
             </Navbar>

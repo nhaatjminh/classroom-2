@@ -14,6 +14,7 @@ export default function MembersList() {
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
     const [loadFirst, setLoadFirst] = useState(true);
+    const [role, setRole] = useState("student");
     let params = useParams();
 
     const getMembers = async (idClass) => {
@@ -51,13 +52,38 @@ export default function MembersList() {
         );
     }
 
-    const detailURL = '/classes/detail/' + params.id;
+    const getRole = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
+        myHeaders.append("Content-Type", "application/json");
 
-    if (loadFirst) {
-        getMembers(params.id)
-        setLoadFirst(false);
+        var raw = JSON.stringify({
+            "classId": params.id
+            });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+            };
+
+        await fetch(process.env.REACT_APP_API_URL + "accounts/role/" + localStorage.getItem("userId"), requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            setRole(result[0].role)
+            console.log(result[0].role);
+        })
+        .catch(error => console.log('error', error));
     }
 
+    if (loadFirst) {
+        getMembers(params.id);
+        getRole();
+        setLoadFirst(false);
+    }
+    const gradesStructure = '/grades/' + params.id;
+    const detailURL = '/classes/detail/' + params.id;
     const listAssignmentURL = '/classes/detail/' + params.id + "/assignment";
     return (
       <div>
@@ -74,6 +100,9 @@ export default function MembersList() {
                     </NavLink>
                     <NavLink className="nav-link" to={listAssignmentURL}>
                         List Assignment
+                    </NavLink>
+                    <NavLink className="nav-link" to={gradesStructure} hidden={!(role === 'teacher')}>
+                        Grades Structure
                     </NavLink>
                     </Navbar.Collapse>
                 </Navbar>

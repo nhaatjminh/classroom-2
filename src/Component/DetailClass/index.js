@@ -149,7 +149,7 @@ const DetailClass = () => {
         .then(response => response.json())
         .then(result => {
             setUserRole(result[0].role)
-            console.log(result.role);
+            console.log(result[0].role);
         })
         .catch(error => console.log('error', error));
     }
@@ -179,6 +179,7 @@ const DetailClass = () => {
 
     const listAssignmentURL = '/classes/detail/' + params.id + "/assignment";
     const memberURL = '/classes/members/' + params.id;
+    const gradesStructure = '/grades/' + params.id;
     return(
             <div>
                 <Navbar bg="dark" variant="dark">
@@ -199,6 +200,9 @@ const DetailClass = () => {
                     </NavLink>
                     <NavLink className="nav-link" to={listAssignmentURL}>
                         List Assignment
+                    </NavLink>
+                    <NavLink className="nav-link" to={gradesStructure} hidden={!(userRole === 'teacher')}>
+                        Grades Structure
                     </NavLink>
                     </Navbar.Collapse>
                 </Navbar>

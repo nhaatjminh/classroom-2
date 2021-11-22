@@ -9,7 +9,7 @@ import MembersList from './Component/Members';
 import TopNavBar from './Component/AppBar';
 import Profile from './Component/Profile';
 import ListAssignment from './Component/ListAssignment'
-
+import Grades from './Component/Grades';
 function App() {
 
   const [isLogin, setIsLogin] = useState(localStorage.getItem("token") != null);
@@ -34,6 +34,7 @@ function App() {
       <Route path='/classes/members/:id' element={<MembersList/>}/>
       <Route path='/classes/acceptlink/:tokenlink' element={<AcceptLink/>}/>
       <Route path='/profile/:id' element={<Profile/>}/>
+      <Route path='/grades/:id' element={<Grades/>}/>
     </Routes>
     </div>
   );
