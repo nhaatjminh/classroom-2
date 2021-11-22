@@ -6,10 +6,15 @@ import './index.css'
 
 const ListAssignment = () => {
     const params = useParams();
+    const detailURL = '/classes/detail/' + params.id;
+    const memberURL = '/classes/members/' + params.id;
+    const gradesStructure = '/grades/' + params.id;
+
     const [role, setRole] = useState();
     const [arrayAssignment, setArrayAssignment] = useState([]);
     const [show, setShow] = React.useState(false);
     const [topic, setTopic] = useState("");
+    const [grade, setGrade] = useState(0);
     const [description, setDescription] = useState("");
     const [minus, setMinus] = useState("0");
     const [hour, setHour] = useState("0");
@@ -18,6 +23,18 @@ const ListAssignment = () => {
     const [year, setYear] = useState("2020");
 
     const [loadFirst, setLoadFirst] = useState(true);
+
+    const topicOnChangeHandler = (e) => setTopic(e.target.value);
+    const gradeOnChangeHandler = (e) => setGrade(e.target.value);
+    const descriptionOnChangeHandler = (e) => setDescription(e.target.value);
+    const minusOnChangeHandler = (e) => setMinus(e.target.value);
+    const hourOnChangeHandler = (e) => setHour(e.target.value);
+    const dayOnChangeHandler = (e) => setDay(e.target.value);
+    const monthOnChangeHandler = (e) => setMonth(e.target.value);
+    const yearOnChangeHandler = (e) => setYear(e.target.value);
+	const onHandleModalClose = () => setShow(false);
+	const onHandleModalShow = () => setShow(true);
+
     const createAssignment = (e) => {
         e.preventDefault();
 
@@ -26,10 +43,10 @@ const ListAssignment = () => {
         myHeaders.append("Content-Type", "application/json");
 
         let raw = JSON.stringify({
-            "idClass": params.id,
             "topic": topic,
+            "grade": grade,
             "description": description,
-            "deadline": minus + ":" + hour + " " + day + "-" + month + "-" + year,
+            "deadline": minus + ":" + hour + " " + day + "-" + month + "-" + year
         });
 
         let requestOptions = {
@@ -39,7 +56,7 @@ const ListAssignment = () => {
             redirect: 'follow'
         };
 
-        fetch(process.env.REACT_APP_API_URL + "classes/assignment/" + params.id, requestOptions)
+        fetch(process.env.REACT_APP_API_URL + "assignment/" + params.id, requestOptions)
         .then(response =>  {
             console.log(response);
             return response.text();
@@ -47,6 +64,7 @@ const ListAssignment = () => {
         .then(result => {
             console.log(result);
             alert("Assignment Created!");
+            window.location.reload();
         })
         .catch(error => {
             console.log('error', error)
@@ -65,16 +83,7 @@ const ListAssignment = () => {
         }
         return options;
     }
-
-    const topicOnChangeHandler = (e) => setTopic(e.target.value);
-    const descriptionOnChangeHandler = (e) => setDescription(e.target.value);
-    const minusOnChangeHandler = (e) => setMinus(e.target.value);
-    const hourOnChangeHandler = (e) => setHour(e.target.value);
-    const dayOnChangeHandler = (e) => setDay(e.target.value);
-    const monthOnChangeHandler = (e) => setMonth(e.target.value);
-    const yearOnChangeHandler = (e) => setYear(e.target.value);
-	const onHandleModalClose = () => setShow(false);
-	const onHandleModalShow = () => setShow(true);
+    
     const getRole = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
@@ -82,7 +91,7 @@ const ListAssignment = () => {
 
         var raw = JSON.stringify({
             "classId": params.id
-            });
+        });
 
         var requestOptions = {
             method: 'POST',
@@ -94,11 +103,13 @@ const ListAssignment = () => {
         await fetch(process.env.REACT_APP_API_URL + "accounts/role/" + localStorage.getItem("userId"), requestOptions)
         .then(response => response.json())
         .then(result => {
-            setRole(result[0].role)
             console.log(result[0].role);
+            setRole(result[0].role)
+
         })
         .catch(error => console.log('error', error));
     }
+
     useEffect(() => {
         let myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
@@ -113,7 +124,7 @@ const ListAssignment = () => {
         .then(response => response.json())
         .then(result => {
             if (result) {
-                // TODO
+                console.log(result);
                 setArrayAssignment(result);
             }
         })
@@ -121,13 +132,12 @@ const ListAssignment = () => {
             console.log('error', error);
         })
     }, [params.id]);
+
     if (loadFirst) {
         getRole();
         setLoadFirst(false);
     }
-    const detailURL = '/classes/detail/' + params.id;
-    const memberURL = '/classes/members/' + params.id;
-    const gradesStructure = '/grades/' + params.id;
+
     return (
         <div>
             <Navbar bg="dark" variant="dark">
@@ -161,13 +171,22 @@ const ListAssignment = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label> Topic </Form.Label>
-                            <Form.Control type="text" 
-                                        value={topic}
-                                        onChange={topicOnChangeHandler} />
-                        </Form.Group>
-
+                        <Row>
+                            <Col sm={10}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label> Topic </Form.Label>
+                                    <Form.Control type="text" 
+                                                onChange={topicOnChangeHandler} />
+                                </Form.Group>
+                            </Col>
+                            <Col sm={2}>
+                            <Form.Group className="mb-3">
+                                <Form.Label> Grade </Form.Label>
+                                <Form.Control type="number" 
+                                            onChange={gradeOnChangeHandler} />
+                            </Form.Group>
+                            </Col>
+                        </Row>
                         <Form.Group className="mb-3">
                             <Form.Label> Description </Form.Label>
                             <Form.Control as="textarea" 
@@ -213,17 +232,16 @@ const ListAssignment = () => {
                                 <Form.Group className="mb-3">
                                     <Form.Label> Year </Form.Label>
                                     <Form.Select onChange={yearOnChangeHandler}>
-                                        {getNumberOptionForCombobox(2000, 2020)}
+                                        {getNumberOptionForCombobox(2020, 2040)}
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
-
                         </Row>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <div className="footer-createBtnAssign text-center">
-                        <button className="btn btn-dark btnAssign" onClick={createAssignment}> Create </button>
+                    <div className="footer-createAssignBtn text-center">
+                        <button className="btn btn-dark btnCreateAssign" onClick={createAssignment}> Create </button>
                     </div>
                 </Modal.Footer>
             </Modal>
