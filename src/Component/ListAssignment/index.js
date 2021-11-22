@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Form, Modal, Row, Col } from 'react-bootstrap';
-import { useParams } from "react-router-dom";
+import { Form, Modal, Row, Col, Navbar  } from 'react-bootstrap';
+import { NavLink, useParams } from "react-router-dom";
 import Assignment from '../Assignment';
 import './index.css'
 
 const ListAssignment = () => {
     const params = useParams();
-    
+    const [role, setRole] = useState();
     const [arrayAssignment, setArrayAssignment] = useState([]);
     const [show, setShow] = React.useState(false);
     const [topic, setTopic] = useState("");
@@ -17,6 +17,7 @@ const ListAssignment = () => {
     const [month, setMonth] = useState("1");
     const [year, setYear] = useState("2020");
 
+    const [loadFirst, setLoadFirst] = useState(true);
     const createAssignment = (e) => {
         e.preventDefault();
 
@@ -54,7 +55,7 @@ const ListAssignment = () => {
     }
 
     const getListAssignment = () => {
-        return arrayAssignment.map((ele) => <Assignment/>)
+        return arrayAssignment.map((ele) => <Assignment key={ele.id} dataAssignment={ele}/>)
     }
 
     const getNumberOptionForCombobox = (from, to) => {
@@ -74,7 +75,30 @@ const ListAssignment = () => {
     const yearOnChangeHandler = (e) => setYear(e.target.value);
 	const onHandleModalClose = () => setShow(false);
 	const onHandleModalShow = () => setShow(true);
+    const getRole = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
+        myHeaders.append("Content-Type", "application/json");
 
+        var raw = JSON.stringify({
+            "classId": params.id
+            });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+            };
+
+        await fetch(process.env.REACT_APP_API_URL + "accounts/role/" + localStorage.getItem("userId"), requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            setRole(result[0].role)
+            console.log(result[0].role);
+        })
+        .catch(error => console.log('error', error));
+    }
     useEffect(() => {
         let myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
@@ -90,22 +114,44 @@ const ListAssignment = () => {
         .then(result => {
             if (result) {
                 // TODO
-                setArrayAssignment([])
+                setArrayAssignment(result);
             }
         })
         .catch(error => {
             console.log('error', error);
         })
     }, [params.id]);
-
+    if (loadFirst) {
+        getRole();
+        setLoadFirst(false);
+    }
+    const detailURL = '/classes/detail/' + params.id;
+    const memberURL = '/classes/members/' + params.id;
+    const test = process.env.REACT_APP_API_URL + "assignment/" + params.id;
     return (
         <div>
-            <div className="btn-new">
-                <button className="btn btn-success" onClick={onHandleModalShow}> Add New </button>
+            <Navbar bg="dark" variant="dark">
+                    
+                    {/* <button className="btn btn-success backbtn" onClick={this.props.backToList}> Back </button> */}
+                <Navbar.Toggle /> 
+                <div className="btn-new" hidden={!(role === 'teacher')}>
+                    <button className="btn btn-success" onClick={onHandleModalShow}> Add New </button>
+                </div>
+                <Navbar.Collapse className="justify-content-end">
+                <NavLink className="nav-link" to={detailURL} >
+                    Detail
+                </NavLink>
+                <NavLink className="nav-link" to={memberURL}>
+                    People
+                </NavLink>
+                <NavLink className="nav-link" to='#'>
+                    List Assignment
+                </NavLink>
+                </Navbar.Collapse>
+            </Navbar>
+            <div className="list-assignment">
+                {getListAssignment()}
             </div>
-
-            {getListAssignment()}
-
             <Modal show={show} onHide={onHandleModalClose} dialogClassName="modal-70w">
                 <Modal.Header closeButton>
                 <Modal.Title>Adding Assignment</Modal.Title>

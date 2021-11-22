@@ -1,8 +1,8 @@
 
 import React, { useState} from 'react';
-import { useParams} from "react-router-dom"
+import { NavLink, useParams} from "react-router-dom"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Modal } from "react-bootstrap"
+import { Navbar, Modal } from "react-bootstrap"
 import './index.css'
 import SendIcon from '@mui/icons-material/Send';
 import InputLabel from '@mui/material/InputLabel';
@@ -178,13 +178,30 @@ const DetailClass = () => {
     }
 
     const listAssignmentURL = '/classes/detail/' + params.id + "/assignment";
-
+    const memberURL = '/classes/members/' + params.id;
     return(
             <div>
-                <div style={{ margin: '10px 10px'}} hidden={!userRole === "teacher"}>
-                       <button className="btn btn-success m-2" onClick={onHandleShow}> Invite </button>
-                       <Link className="btn btn-success m-2" to={listAssignmentURL}>List Assignment</Link>
-                </div>
+                <Navbar bg="dark" variant="dark">
+                    
+                    {/* <button className="btn btn-success backbtn" onClick={this.props.backToList}> Back </button> */}
+                    <Navbar.Toggle />
+                    
+                    <div className="invitebtn" hidden={!(userRole === "teacher")}>
+                        <button className="btn btn-success" onClick={onHandleShow}> Invite </button>
+                        {/* <Link className="btn btn-success m-2" to={listAssignmentURL}></Link> */}
+                    </div>
+                    <Navbar.Collapse className="justify-content-end">
+                    <NavLink className="nav-link" to="#" >
+                        Detail
+                    </NavLink>
+                    <NavLink className="nav-link" to={memberURL}>
+                        People
+                    </NavLink>
+                    <NavLink className="nav-link" to={listAssignmentURL}>
+                        List Assignment
+                    </NavLink>
+                    </Navbar.Collapse>
+                </Navbar>
 
                 <div className="container-fluid mt-5">
                     <h1 className="text-center">

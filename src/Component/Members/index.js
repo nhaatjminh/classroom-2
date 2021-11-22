@@ -58,21 +58,26 @@ export default function MembersList() {
         setLoadFirst(false);
     }
 
-  return (
+    const listAssignmentURL = '/classes/detail/' + params.id + "/assignment";
+    return (
       <div>
-        <Navbar bg="dark" variant="dark">
+          <Navbar bg="dark" variant="dark">
                     
-            {/* <button className="btn btn-success backbtn" onClick={this.props.backToList}> Back </button> */}
-            <Navbar.Toggle />
-            <Navbar.Collapse className="justify-content-end">
-            <NavLink className="nav-link" to={detailURL} >
-                Detail
-            </NavLink>
-            <NavLink className="nav-link" to='#'>
-                People
-            </NavLink>
-            </Navbar.Collapse>
-        </Navbar>
+                    {/* <button className="btn btn-success backbtn" onClick={this.props.backToList}> Back </button> */}
+                    <Navbar.Toggle />
+                    <Navbar.Collapse className="justify-content-end">
+                    <NavLink className="nav-link" to={detailURL} >
+                        Detail
+                    </NavLink>
+                    <NavLink className="nav-link" to='#'>
+                        People
+                    </NavLink>
+                    <NavLink className="nav-link" to={listAssignmentURL}>
+                        List Assignment
+                    </NavLink>
+                    </Navbar.Collapse>
+                </Navbar>
+        
 
         <Grid align='center'>
             

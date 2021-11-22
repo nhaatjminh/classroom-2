@@ -1,5 +1,6 @@
 .assignment {
     width: 60% !important;
+    margin-top: 2%;
 }
 
 .teacher{
@@ -8,4 +9,7 @@
 
 .description {
     font: 12px Arial;
+}
+.head-center {
+    text-align:center;
 }
