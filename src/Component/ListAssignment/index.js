@@ -4,6 +4,8 @@ import { NavLink, useParams } from "react-router-dom";
 import Assignment from '../Assignment';
 import './index.css'
 import $ from "jquery";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 const ListAssignment = () => {
     const params = useParams();
@@ -147,7 +149,6 @@ const ListAssignment = () => {
         .then(response => response.json())
         .then(result => {
             if (result) {
-                console.log(result);
                 setArrayAssignment(result);
             }
         })
@@ -160,6 +161,8 @@ const ListAssignment = () => {
         getRole();
         setLoadFirst(false);
     }
+
+    var tmpList = arrayAssignment.slice();
 
     return (
         <div>
@@ -185,9 +188,65 @@ const ListAssignment = () => {
                 </NavLink>
                 </Navbar.Collapse>
             </Navbar>
-            <div className="list-assignment">
+            {/* <div className="list-assignment">
                 {getListAssignment()}
+            </div> */}
+            <div>
+            <DragDropContext
+                onDragEnd={(param) => {
+                    const srcI = param.source.index;
+                    const desI = param.destination?.index;
+                    console.log("src: " + srcI);
+                    console.log("des: " + desI);
+                    // var tmp = tmpList[srcI];
+                    // tmpList[srcI] = tmpList[desI];
+                    // tmpList[desI] = tmp;
+                    tmpList.splice(desI, 0, tmpList.splice(srcI, 1)[0]);
+                    console.log(tmpList);
+                    
+                    // if (desI) {
+                       
+                    //     tmpList.splice(desI, 0, tmpList.splice(srcI, 1)[0]);
+                    // }
+                }}
+            >
+                <Droppable droppableId="droppable-1">
+                    {(provided, _) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                        {tmpList.map((item, i) => (
+                        <Draggable
+                            key={item.id}
+                            draggableId={"draggable-" + item.id}
+                            index={i}
+                        >
+                            {(provided, snapshot) => (
+                            <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                
+                                style={{
+                                ...provided.draggableProps.style,
+                                }}
+                            >
+                                
+                                <div align='center' {...provided.dragHandleProps}>
+                                <DragIndicatorIcon  />
+                                </div>
+                                <Assignment  
+                                    onDeleteSuccess={() => onDeleteSuccess(item.id)} 
+                                    onUpdateSuccess={() => onUpdateSuccess(item.id)} 
+                                    dataAssignment={item}/>
+                            </div>
+                            )}
+                        </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
             </div>
+            
             <Modal show={show} onHide={onHandleModalClose} dialogClassName="modal-70w">
                 <Modal.Header closeButton>
                 <Modal.Title>Adding Assignment</Modal.Title>
