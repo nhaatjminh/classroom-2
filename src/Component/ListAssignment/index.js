@@ -3,6 +3,7 @@ import { Form, Modal, Row, Col, Navbar  } from 'react-bootstrap';
 import { NavLink, useParams } from "react-router-dom";
 import Assignment from '../Assignment';
 import './index.css'
+import $ from "jquery";
 
 const ListAssignment = () => {
     const params = useParams();
@@ -42,12 +43,14 @@ const ListAssignment = () => {
         myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/json");
 
-        let raw = JSON.stringify({
+        let newAssign = {
             "topic": topic,
             "grade": grade,
             "description": description,
             "deadline": minus + ":" + hour + " " + day + "-" + month + "-" + year
-        });
+        }
+
+        let raw = JSON.stringify(newAssign);
 
         let requestOptions = {
             method: 'POST',
@@ -64,7 +67,11 @@ const ListAssignment = () => {
         .then(result => {
             console.log(result);
             alert("Assignment Created!");
-            window.location.reload();
+            //window.location.reload();
+            var newArrayAssignment = arrayAssignment.slice();
+            newArrayAssignment.push(newAssign);
+            setArrayAssignment(newArrayAssignment);
+            onHandleModalClose();
         })
         .catch(error => {
             console.log('error', error)
@@ -73,7 +80,23 @@ const ListAssignment = () => {
     }
 
     const getListAssignment = () => {
-        return arrayAssignment.map((ele) => <Assignment key={ele.id} dataAssignment={ele}/>)
+        return arrayAssignment.map((ele) => 
+        <Assignment 
+            key={ele.id} 
+            onDeleteSuccess={() => onDeleteSuccess(ele.id)} 
+            onUpdateSuccess={() => onUpdateSuccess(ele.id)} 
+            dataAssignment={ele}/>)
+    }
+
+    const onDeleteSuccess = (idAssign) => {
+        var newArrayAssignment = $.grep(arrayAssignment, function(e){ 
+            return e.id != idAssign; 
+       }); 
+        setArrayAssignment(newArrayAssignment);
+    }
+
+    const onUpdateSuccess = (idAssign) => {
+        
     }
 
     const getNumberOptionForCombobox = (from, to) => {
