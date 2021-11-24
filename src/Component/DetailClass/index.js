@@ -9,8 +9,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import {Typography} from '@material-ui/core'
-import { Link } from 'react-router-dom';
+import {Typography} from '@material-ui/core';
 
 
 const DetailClass = () => {

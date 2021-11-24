@@ -2,7 +2,7 @@
 import React, { useState} from 'react';
 import { NavLink, useParams} from "react-router-dom"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Modal } from "react-bootstrap"
+import { Navbar } from "react-bootstrap"
 import './index.css'
 const Grades = () => {
     const [loadFirst, setLoadFirst] = useState(true);

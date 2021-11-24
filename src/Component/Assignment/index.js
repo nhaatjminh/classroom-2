@@ -6,7 +6,7 @@ import { Card} from 'react-bootstrap';
 // import {Link} from 'react-router-dom';
 import './index.css';
 
-const Assignment = ({dataAssignment, onDeleteSuccess, onUpdateSuccess}) => {
+const Assignment = ({dataAssignment, onDeleteSuccess, onUpdateSuccess, role}) => {
     const [show, setShow] = useState(false);
     const [topic, setTopic] = useState(dataAssignment.topic);
     const [grade, setGrade] = useState(dataAssignment.grade);
@@ -111,8 +111,12 @@ const Assignment = ({dataAssignment, onDeleteSuccess, onUpdateSuccess}) => {
         </Card.Body>
         <Card.Footer className="text-center">
             <div className="footer-createAssignBtn text-center">
-                <button className="btn btn-danger btnDeleteAssign" onClick={deleteAssignment}> Delete </button>
-                <button className="btn btn-info btnDeleteAssign" onClick={onHandleModalShow}> Update </button>
+                <button className="btn btn-danger btnDeleteAssign"
+                        onClick={deleteAssignment}
+                        hidden={!(role === 'teacher')}> Delete </button>
+                <button className="btn btn-info btnDeleteAssign" 
+                        onClick={onHandleModalShow}
+                        hidden={!(role === 'teacher')}> Update </button>
             </div>
         </Card.Footer>
 

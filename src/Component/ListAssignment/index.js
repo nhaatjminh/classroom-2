@@ -81,13 +81,35 @@ const ListAssignment = () => {
         });
     }
 
+    const UpdateRank = (list) => {
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(list);
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        fetch(process.env.REACT_APP_API_URL + "assignment/updateRank/" + params.id, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    }
+
     const getListAssignment = () => {
         return arrayAssignment.map((ele) => 
         <Assignment 
             key={ele.id} 
             onDeleteSuccess={() => onDeleteSuccess(ele.id)} 
             onUpdateSuccess={() => onUpdateSuccess(ele.id)} 
-            dataAssignment={ele}/>)
+            dataAssignment={ele}
+            role={role}/>)
     }
 
     const onDeleteSuccess = (idAssign) => {
@@ -188,26 +210,21 @@ const ListAssignment = () => {
                 </NavLink>
                 </Navbar.Collapse>
             </Navbar>
-            {/* <div className="list-assignment">
-                {getListAssignment()}
-            </div> */}
+            {role !== 'teacher' ? 
+            <div className="list-assignment">
+            {getListAssignment()}
+            </div> 
+            
+                :
+            
             <div>
             <DragDropContext
                 onDragEnd={(param) => {
                     const srcI = param.source.index;
                     const desI = param.destination?.index;
-                    console.log("src: " + srcI);
-                    console.log("des: " + desI);
-                    // var tmp = tmpList[srcI];
-                    // tmpList[srcI] = tmpList[desI];
-                    // tmpList[desI] = tmp;
                     tmpList.splice(desI, 0, tmpList.splice(srcI, 1)[0]);
-                    console.log(tmpList);
-                    
-                    // if (desI) {
-                       
-                    //     tmpList.splice(desI, 0, tmpList.splice(srcI, 1)[0]);
-                    // }
+                    setArrayAssignment(tmpList);
+                    UpdateRank(tmpList);
                 }}
             >
                 <Droppable droppableId="droppable-1">
@@ -232,10 +249,12 @@ const ListAssignment = () => {
                                 <div align='center' {...provided.dragHandleProps}>
                                 <DragIndicatorIcon  />
                                 </div>
-                                <Assignment  
+                                <Assignment
+                                    key={item.id}  
                                     onDeleteSuccess={() => onDeleteSuccess(item.id)} 
                                     onUpdateSuccess={() => onUpdateSuccess(item.id)} 
-                                    dataAssignment={item}/>
+                                    dataAssignment={item}
+                                    role={role}/>
                             </div>
                             )}
                         </Draggable>
@@ -246,6 +265,7 @@ const ListAssignment = () => {
                 </Droppable>
             </DragDropContext>
             </div>
+            }
             
             <Modal show={show} onHide={onHandleModalClose} dialogClassName="modal-70w">
                 <Modal.Header closeButton>
