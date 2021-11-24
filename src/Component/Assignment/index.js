@@ -106,7 +106,7 @@ const Assignment = ({dataAssignment, onDeleteSuccess, onUpdateSuccess, role}) =>
         <Card.Body>            
             {/* <Card.Title> Abc </Card.Title> */}
             <Card.Text> {dataAssignment.description} </Card.Text> 
-
+            <Card.Text> Point: {dataAssignment.grade} / 10</Card.Text>   
             <Card.Text> {dataAssignment.deadline} </Card.Text>   
         </Card.Body>
         <Card.Footer className="text-center">
